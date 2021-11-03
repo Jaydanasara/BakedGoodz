@@ -1,0 +1,181 @@
+const{Router}= require("express");
+const router =Router()
+const JWT = require("jsonwebtoken")
+const SECRET_KEY = "fjdskl543543hyrtewoujrkfldsbnm,cxnvjdfh43534"
+
+const OrdersModel = require("../db/schema/orders")
+
+
+router.post("/", async (req, res)=> {
+  
+
+    const  order = req.body;
+    const { authorization } = req.headers;
+
+    if ( !order.cart.length > 0) {
+      res.json({
+        status: "error",
+        message: "No cart items sent.",
+      });
+      return false;
+    }
+  
+    JWT.verify(authorization,SECRET_KEY , (errorpayload, payload) => {
+      if (errorpayload) {
+        console.log(errorpayload)
+        res.json({
+          status: "error",
+          message: "User needs to be logged in to place order.",
+        });
+        return false;
+      }
+    }); 
+      try {
+        console.log(order)
+        const newOrder = new OrdersModel(order);
+        const response = await newOrder.save();
+        res.json(response)
+
+    } catch (error) {
+        console.log(error);
+        console.log(error)
+        res.status(500).json({ status: "Error Occured." })
+    }
+    
+  });
+
+
+
+
+  router.get("/", async (req, res)=> {
+  
+    const { authorization } = req.headers;
+    let payLoad=""
+    JWT.verify(authorization,SECRET_KEY , (errorpayload, payload) => {
+      if (errorpayload) {
+        console.log(errorpayload)
+        res.json({
+          status: "error",
+          message: "User needs to be logged in to place order.",
+        });
+        return false;
+      }else{
+        payLoad=payload
+      }
+    }); 
+      try {
+       
+        const response=await OrdersModel.find({ userid : payLoad.id })
+       
+        res.json(response)
+
+    } catch (error) {
+        console.log(error);
+        console.log(error)
+        res.status(500).json({ status: "Error Occured." })
+    }
+    
+  });
+  
+ 
+  
+  router.get("/", async (req, res)=> {
+  
+    const { authorization } = req.headers;
+    let payLoad=""
+    JWT.verify(authorization,SECRET_KEY , (errorpayload, payload) => {
+      if (errorpayload) {
+        console.log(errorpayload)
+        res.json({
+          status: "error",
+          message: "User needs to be logged in to place order.",
+        });
+        return false;
+      }else{
+        payLoad=payload
+      }
+    }); 
+      try {
+       
+        const response=await OrdersModel.find({ userid : payLoad.id })
+       
+        res.json(response)
+
+    } catch (error) {
+        console.log(error);
+        console.log(error)
+        res.status(500).json({ status: "Error Occured." })
+    }
+    
+  });
+
+//adminRoute
+  router.patch("/:id", async (req, res)=> {
+   
+    const { body, params } = req;
+    const { id } = params
+    const { authorization } = req.headers;
+    let payLoad=""
+    JWT.verify(authorization,SECRET_KEY , (errorpayload, payload) => {
+      if (errorpayload) {
+        console.log(errorpayload)
+        res.json({
+          status: "error",
+          message: "User needs to be logged in to place order.",
+        });
+        return false;
+      }else{
+        payLoad=payload
+      }
+    }); 
+      try {
+       console.log(body)
+        const response=await OrdersModel.updateOne({ _id: id }, body)
+       
+        res.json(response)
+
+    } catch (error) {
+        console.log(error);
+        console.log(error)
+        res.status(500).json({ status: "Error Occured." })
+    }
+    
+  });
+
+
+  // adminroute delete order
+
+  router.delete("/delete/:id", async (req, res)=> {
+ 
+   
+    const { body, params } = req;
+    const { id } = params
+    const { authorization } = req.headers;
+    let payLoad=""
+    JWT.verify(authorization,SECRET_KEY , (errorpayload, payload) => {
+      if (errorpayload) {
+        console.log(errorpayload)
+        res.json({
+          status: "error",
+          message: "User needs to be logged in to place order.",
+        });
+        return false;
+      }else{
+        payLoad=payload
+      }
+    }); 
+      try {
+     
+        const response=await OrdersModel.findByIdAndDelete({ _id: id })
+       
+        res.json(response)
+
+    } catch (error) {
+        console.log(error);
+        console.log(error)
+        res.status(500).json({ status: "Error Occured." })
+    }
+    
+  });
+
+module.exports=router
