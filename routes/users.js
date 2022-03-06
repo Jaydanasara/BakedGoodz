@@ -24,22 +24,22 @@ router.get("/allUsers", async (req, res, next) => {
 
 
 router.post("/login", async (req, res) => {
-    console.log("login nooooooooooooooooo")
+   
 
     const { email, password } = req.body;
 
     try {
-        const doc = await UserModel.findOne({ email, password }, "-password");
-        console.log("this is doc" + doc)
+        const doc = await UserModel.findOne({ email });
+        console.log(doc)
+          const passwordCheck = await  doc.comparePassword(password,doc.password)
 
-
-        if (doc) {
+        if (doc&& passwordCheck) {
             const token = JWT.sign({ id: doc._id }, SECRET_KEY, { expiresIn: expire_time })
 
             res.status(201).json({ status: "success", data: {doc,token} })
         }
         else {
-            res.status(403).json({ status: "user not found" })
+            res.status(403).json({ status: "user not found or password in correct" })
         }
 
     } catch (error) {
@@ -91,15 +91,15 @@ router.post("/login", async (req, res) => {
 // })
 
 router.patch("/:id", async (req, res) => {
-    console.log("patch")
+    
     const { body, params } = req;
     const { id } = params
-    console.log(id)
+   
     try {
         // id === _id (mongooose)
         const response = await UserModel.updateOne({ _id: id }, { status: "incomplete" })
         res.status(200).json(response);
-        console.log(response)
+       
 
     } catch (error) {
 
@@ -116,14 +116,14 @@ router.post("/register", async (req, res) => {
 
 
         const user = await new UserModel(newUser).save()
-        console.log(user)
+      
         if (user) {
             res.status(200).json({ status: "success", data: user })
         }
 
     } catch (err) {
-        console.log("error caught in patch user route, check http response")
-        res.status(500).json({ status: "Error Occured.", error })
+        console.log("error caught in patch user route, check http response", err)
+        res.status(500).json({ status: "Error Occured.", err })
 
 
     }

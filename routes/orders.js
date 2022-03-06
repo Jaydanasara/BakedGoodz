@@ -2,15 +2,21 @@ const { Router } = require("express");
 const router = Router()
 const JWT = require("jsonwebtoken")
 const SECRET_KEY = "fjdskl543543hyrtewoujrkfldsbnm,cxnvjdfh43534"
+const env=require('dotenv').config()
 
+const accountSid = process.env.id 
+const authToken = process.env.token; 
+const client = require('twilio')(accountSid, authToken); 
 const OrdersModel = require("../db/schema/orders")
 
 
 router.post("/", async (req, res) => {
-console.log("hello")
-  const order = req.body;
+
+  const order = req.body
+  
+  
   const { authorization } = req.headers;
-  console.log("hey" + authorization)
+  
   if (!order.cart.length > 0) {
     res.json({
       status: "error",
@@ -18,6 +24,17 @@ console.log("hello")
     });
     return false;
   }
+
+
+  // client.messages 
+  // .create({    
+  //   body: order.user.firstName +"has made an order",
+  //   from: process.env.twilioNumber,     
+  //    to:  process.env.recipiantNumber
+  //  }) 
+  // .then(message => console.log(message.sid)) 
+  // .done();
+  
 
   try {
     JWT.verify(authorization, SECRET_KEY, (errorpayload, payload) => {
@@ -30,10 +47,17 @@ console.log("hello")
         return false;
       }
     });
+
+
+   
+   
   
     const newOrder = new OrdersModel(order);
     const response = await newOrder.save();
     res.json(response)
+
+
+  
 
   } catch (error) {
     console.log("error caught in make order, check http response")
@@ -42,26 +66,30 @@ console.log("hello")
 
 });
 
-router.get("/", async (req, res) => {
 
+
+router.get("/", async (req, res) => {
+ 
   const { authorization } = req.headers;
   let payLoad = ""
 
   try {
     JWT.verify(authorization, SECRET_KEY, (errorpayload, payload) => {
       if (errorpayload) {
-        console.log(errorpayload)
+       
         res.json({
           status: "error",
           message: "User needs to be logged in to get orders.",
         });
         return false;
       } else {
+        
         payLoad = payload
+       
       }
     });
-    const response = await OrdersModel.find({ userid: payLoad.id })
-
+    const response = await OrdersModel.find({ user: payLoad.id })
+    console.log(response)
     res.json(response)
 
   } catch (error) {
@@ -111,7 +139,7 @@ router.patch("/:id", async (req, res) => {
   try {
     JWT.verify(authorization, SECRET_KEY, (errorpayload, payload) => {
       if (errorpayload) {
-        console.log(errorpayload)
+       
         res.json({
           status: "error",
           message: "User needs to be logged in to place order.",
@@ -121,7 +149,7 @@ router.patch("/:id", async (req, res) => {
         payLoad = payload
       }
     });
-    console.log(body)
+   
     const response = await OrdersModel.updateOne({ _id: id }, body)
 
     res.status(300).json(response)
@@ -146,7 +174,7 @@ router.delete("/delete/:id", async (req, res) => {
   try {
     JWT.verify(authorization, SECRET_KEY, (errorpayload, payload) => {
       if (errorpayload) {
-        console.log(errorpayload)
+        
         res.json({
           status: "error",
           message: "User needs to be logged in to place order.",

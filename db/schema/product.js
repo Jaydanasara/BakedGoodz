@@ -6,7 +6,16 @@ const ProductsSchema = new Schema({
     "name": String,
     "category":String,
     "description": String,
-    "price": Number,
+    "type":String,
+    "THC":String,
+    "CBD":String,
+    "price": [{
+        "eighth":Number,
+        "quarter":Number,
+        "oz":Number
+        
+    }],
+
     "discountPrice":Number,
     
     "image":String,

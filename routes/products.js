@@ -1,14 +1,15 @@
 const { Router } = require("express");
 const router = Router();
-
+let storeItems=[];
 const ProductModel = require("../db/schema/product")
 router.get("/", async (req, res, next) => {
 
     try {
         const doc = await ProductModel.find({}).then((data) => {
-           
+            storeItems=data
+            module.exports.storeItems=storeItems
             if (data) {
-              
+            
                 res.status(200).json(data)
             }
             else res.status(204).json({ error: "No products found." })
@@ -16,20 +17,19 @@ router.get("/", async (req, res, next) => {
 
     } catch (error) {
         console.log(error);
-        console.log(error)
         res.status(500).json({ status: "Error Occured." })
     }
 })
 
 router.get("/:id", async (req, res) => {
-    console.log("get product by id")
+    
     const { body, params } = req;
     const { id } = params
-    console.log(id)
+    
     try {
         // id === _id (mongooose)
         const doc = await ProductModel.findOne({ _id: id })
-        console.log(doc)
+       
         res.status(200).json(doc);
 
     } catch (error) {
@@ -43,7 +43,7 @@ router.get("/:id", async (req, res) => {
 
 router.post("/addProduct", async (req, res) => {
 
-    console.log("made ")
+    
 
     const newProduct = req.body;
   
@@ -54,7 +54,7 @@ router.post("/addProduct", async (req, res) => {
 
        
         const product = await new ProductModel(newProduct).save()
-        console.log(product)
+        
         if (product) {
             res.status(200).json({ status: "success", data: product })
         }
@@ -74,5 +74,4 @@ router.post("/addProduct", async (req, res) => {
 
 
 
-
-module.exports = router
+module.exports.router=router
