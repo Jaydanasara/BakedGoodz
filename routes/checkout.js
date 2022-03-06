@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const router = Router();
 const JWT = require("jsonwebtoken");
-const { resourceUsage } = require("process");
+
 const SECRET_KEY = "fjdskl543543hyrtewoujrkfldsbnm,cxnvjdfh43534"
 require('dotenv').config()
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
