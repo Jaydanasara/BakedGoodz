@@ -1,4 +1,4 @@
-import { Router } from 'express';
+const { Router } = require("express");
 const router = Router();
 const JWT = require("jsonwebtoken")
 const SECRET_KEY = "fjdskl543543hyrtewoujrkfldsbnm,cxnvjdfh43534"

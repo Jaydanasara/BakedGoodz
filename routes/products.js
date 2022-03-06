@@ -1,4 +1,4 @@
-import { Router } from 'express';
+const { Router } = require("express");
 const router = Router();
 let storeItems=[];
 const ProductModel = require("../db/schema/product")
