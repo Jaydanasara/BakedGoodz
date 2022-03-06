@@ -14,6 +14,7 @@ const admin = require("./routes/admin")
 const profile = require("./routes/profile")
 const homepage = require("./routes/homepage")
 const orders = require("./routes/orders");
+const checkout=require("./routes/checkout")
 const { env } = require("process");
 
 const base = "/api/v1"
