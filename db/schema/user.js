@@ -1,5 +1,5 @@
 const {Schema,model} = require("mongoose");
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { resourceLimits } = require("worker_threads");
 const e = require("express");
 const UserSchema = new Schema({
