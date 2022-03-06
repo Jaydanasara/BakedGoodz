@@ -1,5 +1,4 @@
-const { Router } = require("express");
-const router = Router()
+const router = express.Router();
 const JWT = require("jsonwebtoken");
 const { resourceUsage } = require("process");
 const SECRET_KEY = "fjdskl543543hyrtewoujrkfldsbnm,cxnvjdfh43534"

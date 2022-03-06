@@ -1,5 +1,4 @@
-const { Router } = require("express");
-const router = Router();
+const router = express.Router();
 const JWT = require("jsonwebtoken")
 const UserModel = require("../db/schema/user")
 const ProductModel = require("../db/schema/product")
