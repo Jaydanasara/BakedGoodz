@@ -1,4 +1,5 @@
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
 const ProductModel = require("../db/schema/product")
 
 router.post("/products", async (req, res) => {

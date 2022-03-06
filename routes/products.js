@@ -1,4 +1,5 @@
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
 let storeItems=[];
 const ProductModel = require("../db/schema/product")
 router.get("/", async (req, res, next) => {

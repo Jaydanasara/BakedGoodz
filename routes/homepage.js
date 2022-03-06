@@ -1,4 +1,5 @@
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
 const JWT = require("jsonwebtoken")
 const UserModel = require("../db/schema/user")
 const ProductModel = require("../db/schema/product")

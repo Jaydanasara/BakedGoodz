@@ -1,4 +1,5 @@
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
 const JWT = require("jsonwebtoken")
 const multer = require('multer')
 // const upload = multer({ dest: '../db/images/profiles' })

@@ -1,7 +1,8 @@
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
 
-const JWT = require("jsonwebtoken")
-const UserModel = require("../db/schema/user")
+import { sign, verify } from "jsonwebtoken";
+import UserModel, { find, findOne, updateOne } from "../db/schema/user";
 
 const expire_time = 60 * 20
 // JWT key
@@ -11,7 +12,7 @@ const SECRET_KEY = "fjdskl543543hyrtewoujrkfldsbnm,cxnvjdfh43534"
 router.get("/allUsers", async (req, res, next) => {
 
     try {
-      const  data=await UserModel.find()
+      const  data=await find()
             res.status(201).json({ status: "success", data  })
 
     } catch (error) {
@@ -29,12 +30,12 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const doc = await UserModel.findOne({ email });
+        const doc = await findOne({ email });
         console.log(doc)
           const passwordCheck = await  doc.comparePassword(password,doc.password)
 
         if (doc&& passwordCheck) {
-            const token = JWT.sign({ id: doc._id }, SECRET_KEY, { expiresIn: expire_time })
+            const token = sign({ id: doc._id }, SECRET_KEY, { expiresIn: expire_time })
 
             res.status(201).json({ status: "success", data: {doc,token} })
         }
@@ -97,7 +98,7 @@ router.patch("/:id", async (req, res) => {
    
     try {
         // id === _id (mongooose)
-        const response = await UserModel.updateOne({ _id: id }, { status: "incomplete" })
+        const response = await updateOne({ _id: id }, { status: "incomplete" })
         res.status(200).json(response);
        
 
@@ -170,10 +171,10 @@ router.get("/whoami", async (req, res) => {
 
     const { authorization } = req.headers
     try {
-        const payload = JWT.verify(authorization, SECRET_KEY)
+        const payload = verify(authorization, SECRET_KEY)
 
         if (payload) {
-            const user = await UserModel.findOne({ _id: payload.id }, "-password");
+            const user = await findOne({ _id: payload.id }, "-password");
             res.json({ status : "success", data : user })
         }
         else
@@ -221,4 +222,4 @@ router.get("/whoami", async (req, res) => {
 //     }
 // })
 
-module.exports = router
+export default router
